@@ -1,9 +1,8 @@
 package com.usta.mainmemorymanager.service;
 
-import com.usta.mainmemorymanager.models.FreeBlock;
-import com.usta.mainmemorymanager.models.FreeMemory;
+import com.usta.mainmemorymanager.enums.ProcessState;
+import com.usta.mainmemorymanager.models.*;
 import com.usta.mainmemorymanager.models.Process;
-import com.usta.mainmemorymanager.models.WaitingProcess;
 import com.usta.mainmemorymanager.utils.RandomUtil;
 import lombok.Data;
 
@@ -23,8 +22,10 @@ public class SimulationService {
     private FreeMemory freeMemory;
     private WaitingProcess waitingProcess;
     private List<Process> processesRunning;
+    private List<InstantMemory> instantMemories;
 
     public SimulationService(int sizeMemory) {
+        instantMemories = new ArrayList<>();
         freeMemory = new FreeMemory(sizeMemory);
         waitingProcess = new WaitingProcess();
         processesRunning = new ArrayList<>();
@@ -32,15 +33,17 @@ public class SimulationService {
         numberProcess = 1;
     }
 
-    public void startSimulation(int numberClockCycles) {
+    public List<InstantMemory> startSimulation(int numberClockCycles) {
         for (int i = 0; i < numberClockCycles; i++) {
             clock++;
             inspectRunningProcess();
-            printMemory(" Antes de administrar nuevos procesos ");
+            printMemory(" Before managing new processes ");
             inspectQueuedProcess();
             generateProcess();
-            printMemory(" Después de administrar nuevos procesos ");
+            printMemory(" After managing new processes ");
+            instantMemories.add(new InstantMemory(clock, numberProcess, freeMemory, waitingProcess, processesRunning));
         }
+        return instantMemories;
     }
 
     private void generateProcess() {
@@ -56,8 +59,9 @@ public class SimulationService {
                 freeMemory.addFreeBlockMemory(new FreeBlock(process.getStartLocation(), process.getEndLocation()));
                 process.finish(clock);
             }
-            ;
         });
+        processesRunning = processesRunning.stream()
+                .filter(process -> process.getState() != ProcessState.FINISHED).collect(Collectors.toList());
     }
 
     private void inspectQueuedProcess() {
@@ -104,18 +108,18 @@ public class SimulationService {
 
     public void printMemory(String message) {
         System.out.println("\n............................" + message + "..............................");
-        System.out.println("\nTiempo: " + clock + " unidades de tiempo");
+        System.out.println("\nTime: " + clock);
         System.out.println("\nRunning process\n");
         for (Process process : processesRunning) {
-            System.out.println("\tEl proceso: " + process.toString());
+            System.out.println("\t" + process.toString());
         }
         System.out.println("\nFree memory\n");
         for (FreeBlock block : freeMemory.getFreeBlocksMemory()) {
-            System.out.println("\tEl bloque libre: " + block.toString());
+            System.out.println("\t" + block.toString());
         }
         System.out.println("\nQueue process\n");
         for (Process queuedProcess : waitingProcess.getQueuedProcesses()) {
-            System.out.println("\tProceso en cola: " + queuedProcess.toString());
+            System.out.println("\t" + queuedProcess.toString());
         }
         System.out.println("\n.................................................................");
     }
