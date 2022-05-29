@@ -6,7 +6,6 @@ public class Partition implements Comparable<Partition>{
     int startLocation;
     int endLocation;
     int size;
-    int idArea;
     boolean occupied;
 
     public Partition(int id, int startLocation, int endLocation) {
@@ -14,7 +13,6 @@ public class Partition implements Comparable<Partition>{
         this.startLocation = startLocation;
         this.endLocation = endLocation;
         this.size = endLocation - startLocation;
-        this.idArea = 0;
         this.occupied = false;
     }
 
@@ -50,14 +48,6 @@ public class Partition implements Comparable<Partition>{
         this.size = size;
     }
 
-    public int getIdArea() {
-        return idArea;
-    }
-
-    public void setIdArea(int idArea) {
-        this.idArea = idArea;
-    }
-
     public boolean isOccupied() {
         return occupied;
     }
@@ -80,7 +70,7 @@ public class Partition implements Comparable<Partition>{
     @Override
     public String toString() {
         String name = "free";
-        if (this.idArea > 0) { name = "block " + this.idArea; }
+        if (this.id > 0) { name = "block " + this.id; }
         return "\n" + this.startLocation + " - " + this.endLocation + " " + name + " (size " + this.size + ")";
     }
 }
