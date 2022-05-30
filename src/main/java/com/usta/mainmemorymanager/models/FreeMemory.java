@@ -7,20 +7,17 @@ public class FreeMemory {
     int id;
     int startLocation;
     int endLocation;
-    ArrayList<Partition>sizeOfBlock;
-    ArrayList<Partition>sizeOfFree;
+    ArrayList<FreeBlock>freeBlocksMemory;
 
     public FreeMemory(String startLocation, String endLocation){
-        this.sizeOfBlock = new ArrayList<Partition>();
-        this.sizeOfFree = new ArrayList<Partition>();
+        this.freeBlocksMemory = new ArrayList<FreeBlock>();
 
         this.startLocation = Integer.parseInt(startLocation);
         this.endLocation = Integer.parseInt(endLocation);
 
-        Partition firstPartition = new Partition(1, this.startLocation, this.endLocation);
+        FreeBlock firstFreeBlock = new FreeBlock(1, this.startLocation, this.endLocation);
 
-        this.sizeOfBlock.add(firstPartition);
-        this.sizeOfFree.add(firstPartition);
+        this.freeBlocksMemory.add(firstFreeBlock);
     }
 
     public int getId() {
@@ -47,42 +44,42 @@ public class FreeMemory {
         this.endLocation = endLocation;
     }
 
-    public ArrayList<Partition> getSizeOfBlock() {
-        return sizeOfBlock;
+    public ArrayList<FreeBlock> getFreeBlocksMemory() {
+        return freeBlocksMemory;
     }
 
-    public void setSizeOfBlock(ArrayList<Partition> sizeOfBlock) {
-        this.sizeOfBlock = sizeOfBlock;
+    public void setFreeBlocksMemory(ArrayList<FreeBlock> freeBlocksMemory) {
+        this.freeBlocksMemory = freeBlocksMemory;
     }
 
-    public ArrayList<Partition> getSizeOfFree() {
-        return sizeOfFree;
+    public void addFree(FreeBlock freeBlock) {
+        this.freeBlocksMemory.add(freeBlock);
+        Collections.sort(this.freeBlocksMemory, Collections.reverseOrder());
     }
 
-    public void setSizeOfFree(ArrayList<Partition> sizeOfFree) {
-        this.sizeOfFree = sizeOfFree;
+    public FreeBlock getBiggestPartition() {
+        return this.freeBlocksMemory.get(0);
     }
 
-    public void addFree(Partition partition) {
-        this.sizeOfFree.add(partition);
-        Collections.sort(this.sizeOfFree, Collections.reverseOrder());
+    public static ArrayList<FreeBlock> getSortedBlocksBySize(){
+        ArrayList<FreeBlock> freeBlocks = getSortedBlocksBySize();
+        Collections.sort(freeBlocks);
+        return (getSortedBlocksBySize());
     }
 
-    public Partition getBiggestPartition() {
-        return this.sizeOfFree.get(0);
-    }
-
-    public Partition removeFree() {
-        Partition partition = this.sizeOfFree.get(0);
-        this.sizeOfFree.remove(0);
-        return partition;
-    }
-
-    public int sumFree() {
+    public int updateFreeMemory() {
         int sum = 0;
-        for (int i = 0; i < this.sizeOfFree.size(); i++) {
-            sum += this.sizeOfFree.get(i).getSize();
+        for (int i = 0; i < this.freeBlocksMemory.size(); i++) {
+            sum += this.freeBlocksMemory.get(i).getSize();
         }
         return sum;
     }
+
+    public FreeBlock removeFree() {
+        FreeBlock freeBlock = this.freeBlocksMemory.get(0);
+        this.freeBlocksMemory.remove(0);
+        return freeBlock;
+    }
+
+
 }

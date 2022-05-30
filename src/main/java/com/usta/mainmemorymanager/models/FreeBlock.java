@@ -1,14 +1,14 @@
 package com.usta.mainmemorymanager.models;
 
-public class Partition implements Comparable<Partition>{
+public class FreeBlock implements Comparable<FreeBlock>{
 
     int id;
-    int startLocation;
-    int endLocation;
-    int size;
+    private int startLocation;
+    private int endLocation;
+    private int size;
     boolean occupied;
 
-    public Partition(int id, int startLocation, int endLocation) {
+    public FreeBlock(int id, int startLocation, int endLocation) {
         this.id = id;
         this.startLocation = startLocation;
         this.endLocation = endLocation;
@@ -57,10 +57,10 @@ public class Partition implements Comparable<Partition>{
     }
 
     @Override
-    public int compareTo(Partition partition) {
-        if (this.size < partition.getSize()) {
+    public int compareTo(FreeBlock freeBlock) {
+        if (this.size < freeBlock.getSize()) {
             return -1;
-        } else if (this.size > partition.getSize()) {
+        } else if (this.size > freeBlock.getSize()) {
             return 1;
         }
 
